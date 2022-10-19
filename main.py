@@ -1,11 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi import Response, status, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.templating import Jinja2Templates
 from database import get_db
 from sqlalchemy.orm import Session
+from results import results_to_db
 
-from . import schemas
 
+templates = Jinja2Templates(directory='templates')
 
 app = FastAPI()
 
@@ -19,16 +21,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# @app.get("/")
-# async def read_root():
-#     pair = await show_one_pair('Peru')
-#     print(pair)
-#     return f'{pair["Home Team"]} |{pair["Score"]}| {pair["Away Team"]}'
+@app.get("/")
+def read_root(request:Request):
+    return templates.TemplateResponse('index.html', {"request":request})
 
-# @app.get("/update/{group}/{team_id}", response_model=schemas.BaseTeam)
-# async def update_result(team_id:int, db: Session = Depends(get_db)):
-#     await take_last_results()
-#     return {"Check your database!"}
+@app.get("/update")
+def update_result():
+    results_to_db()
+    return {"Check your database!"}
 
 
 

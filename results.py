@@ -12,11 +12,13 @@ def update_results(result, db:Session, date):
     db.commit()
     db.refresh(db_result)
 
-lastresults = Results(day=11, month=10)
-lastresults.get_results()
-print(lastresults.date)
+def results_to_db(db:Session=SessionLocal()):
+    lastresults = Results(day=14, month=9)
+    lastresults.get_results()
 
-
-
-for result in lastresults.all_pairs:
-    update_results(result,SessionLocal(),date=lastresults.date)
+    for result in lastresults.all_pairs:
+        if (db.query(models.Result).filter(models.Result.home_team_name == result['home_team_name']).first() and 
+        db.query(models.Result).filter(models.Result.away_team_name == result['away_team_name']).first()):
+            print('results already here')
+        else:
+            update_results(result,SessionLocal(),date=lastresults.date)

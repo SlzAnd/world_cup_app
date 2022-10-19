@@ -8,13 +8,20 @@ from datetime import timedelta, datetime
 # Last results
 class Results():
     def __init__(self, day, month) -> None:
-        self.day = day
-        self.month = month
+        if day >= 10:
+            self.day = day
+        else:
+            self.day = f'0{day}'
+        if month >= 10:
+            self.month = month
+        else:
+            self.month = f'0{month}'
         self.all_pairs = []
         self.date = f'{self.day}.{self.month}.2022'
         
     def get_results(self):
         url=f'https://www.goal.com/en/uefa-champions-league/fixtures-results/2022-{self.month}-{self.day}/4oogyu6o156iphvdvphwpck10'
+        print(url)
         wcup_results = requests.get(url)
         soup = BeautifulSoup(wcup_results.content, 'lxml')
         results = soup.find_all('div', class_="match-main-data")
