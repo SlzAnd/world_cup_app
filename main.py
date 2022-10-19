@@ -1,6 +1,11 @@
 from fastapi import FastAPI, HTTPException
+from fastapi import Response, status, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from database import take_last_results, show_one_pair
+from database import get_db
+from sqlalchemy.orm import Session
+
+from . import schemas
+
 
 app = FastAPI()
 
@@ -14,16 +19,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-async def read_root():
-    pair = await show_one_pair('Peru')
-    print(pair)
-    return f'{pair["Home Team"]} |{pair["Score"]}| {pair["Away Team"]}'
+# @app.get("/")
+# async def read_root():
+#     pair = await show_one_pair('Peru')
+#     print(pair)
+#     return f'{pair["Home Team"]} |{pair["Score"]}| {pair["Away Team"]}'
 
-@app.get("/results/update")
-async def read_root():
-    await take_last_results()
-    return {"Check your database!"}
+# @app.get("/update/{group}/{team_id}", response_model=schemas.BaseTeam)
+# async def update_result(team_id:int, db: Session = Depends(get_db)):
+#     await take_last_results()
+#     return {"Check your database!"}
 
 
 
